@@ -1,0 +1,110 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FAEED1;
+    flex-direction: column;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+}
+
+.common-navigation,
+.sekretarz-navigation,
+.admin-navigation {
+    max-width: 350px;
+    background-color: #DED0B6;
+    margin: 10px;
+    margin-top: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+h2 {
+    text-align: center;
+}
+
+.container {
+    max-width: 350px;
+    padding: 16px;
+    background-color: #DED0B6;
+    margin: 10px;
+    margin-top: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.srodek {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input[type=text], input[type=password] {
+    width: -webkit-fill-available;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #B2A59B;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+    background-color: #FAEED1;
+    outline: none;
+}
+
+.loginbtn, button.votebtn, button {
+    background-color: #607274;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.loginbtn:hover, button.votebtn:hover {
+    opacity: 1;
+}
+
+.container span {
+    color: rgb(65, 65, 65);
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    display: block;
+}
+
+select {
+    width: -webkit-fill-available;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #B2A59B;
+}
+
+a[href="/projekty/strony/sGlosowania/logowanie/wyloguj.php"] {
+    color: #607274;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border-radius: 4px;
+    border: 1px solid black;
+    padding: 8px;
+    background-color: #DED0B6;
+}

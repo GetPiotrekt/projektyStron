@@ -1,0 +1,62 @@
+body {
+    font-family: 'Playpen Sans', cursive;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    background-image: URL('tlomed.jpg');
+    background-size: cover;
+    height: 100%;
+}
+
+.glowne {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.strona {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+h1 {
+    color: #333;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+textarea {
+    width: 100%;
+    background-color: #f0f0f0c2;
+    padding: 10px;
+    margin: 5px -10px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-family: 'Playpen Sans', cursive;
+    font-family: 'Roboto', sans-serif;
+}
+
+input[type="submit"] {
+    background-color: #f0f0f0c2;
+    font-family: 'Playpen Sans', cursive;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+input[type="submit"]:hover {
+    background-color: #8c8c8c;
+}
