@@ -32,7 +32,6 @@ h2 {
 }
 
 .container {
-    max-width: 350px;
     padding: 16px;
     background-color: #DED0B6;
     margin: 10px;
@@ -107,4 +106,32 @@ a[href="/projekty/strony/sGlosowania/logowanie/wyloguj.php"] {
     border: 1px solid black;
     padding: 8px;
     background-color: #DED0B6;
+}
+
+.function-container {
+    display: none;
+    margin-top: 20px;
+}
+
+.function-btn {
+    margin-top: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #6b6b6b;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #B2A59B;
+    color: white;
 }

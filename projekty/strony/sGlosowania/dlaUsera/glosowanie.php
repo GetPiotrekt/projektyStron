@@ -46,8 +46,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     exit();
 }
 
-
-$sql = "SELECT * FROM glosowanie";
+$sql = "SELECT * FROM glosowanie WHERE czyAktywne = 1";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -75,6 +74,25 @@ if ($result->num_rows > 0) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Wybór Kandydata</title>
             <link rel="stylesheet" type="text/css" href="\projekty\strony\sGlosowania\style.css">
+            <style>
+                .disabled-btn {
+                    background-color: #ccc; /* Kolor dla wyłączonego przycisku */
+                }
+            </style>
+            <script>
+                function validateSelection<?php echo $row['idGlosowania']; ?>() {
+                    var selectedOption = document.getElementById("opcje<?php echo $row['idGlosowania']; ?>").value;
+                    var submitButton = document.getElementById("submitBtn<?php echo $row['idGlosowania']; ?>");
+
+                    if (selectedOption === "") {
+                        submitButton.disabled = true;
+                        submitButton.classList.add("disabled-btn"); // Dodaj klasę dla stylu wyłączonego przycisku
+                    } else {
+                        submitButton.disabled = false;
+                        submitButton.classList.remove("disabled-btn"); // Usuń klasę dla stylu wyłączonego przycisku
+                    }
+                }
+            </script>
         </head>
         <body>
             <div class="container">
@@ -94,18 +112,18 @@ if ($result->num_rows > 0) {
                         'opcja5' => $row['opcja5']
                     );
 
-                    if (count(array_filter($opcje, function($value) { return $value !== 'puste'; })) > 0) {
-                        echo '<select name="opcje" ' . $disabled . '>';
-                        echo '<option value="">Wybierz opcję</option>';
+                    if (count(array_filter($opcje, function($value) { return $value !== ''; })) > 0) {
+                        echo '<select name="opcje" id="opcje' . $row['idGlosowania'] . '" onchange="validateSelection' . $row['idGlosowania'] . '()" ' . $disabled . '>';
+                        echo '<option value="" disabled selected>Wybierz opcję</option>';
 
                         foreach ($opcje as $value => $opcja) {
-                            if ($opcja !== 'puste') {
+                            if ($opcja !== '') {
                                 echo "<option value='$value' " . ($wyborUzytkownika === $value ? 'selected' : '') . ">$opcja</option>";
                             }
                         }
 
                         echo '</select>';
-                        echo '<button type="submit" class="votebtn" ' . $disabled . '>Zatwierdź</button>';
+                        echo '<button type="submit" id="submitBtn' . $row['idGlosowania'] . '" class="votebtn ' . ($disabled ? 'disabled-btn' : '') . '" ' . $disabled . ' disabled>Zatwierdź</button>';
                     } else {
                         echo '<p>Brak dostępnych opcji do wyboru.</p>';
                     }
@@ -114,6 +132,7 @@ if ($result->num_rows > 0) {
             </div>
         </body>
         </html>
+
         <?php
     }
 } else {

@@ -50,7 +50,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
             
                     if ($conn->query($sqlDodajGlos) === TRUE) {
                         // Wyskakujący komunikat JavaScript z przekierowaniem do poprzedniej strony
-                        echo '<script>alert("Wybór dodany pomyślnie."); window.history.go(-1);</script>';
+                        echo '<script>window.history.go(-1);</script>';
                     } else {
                         // Wyskakujący komunikat JavaScript z błędem i przekierowaniem do poprzedniej strony
                         echo '<script>alert("Błąd podczas dodawania wyboru: ' . $conn->error . '"); window.history.go(-1);</script>';
