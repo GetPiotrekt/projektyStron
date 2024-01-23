@@ -1,0 +1,6 @@
+{
+    "name": "gplay_rgdvcix/projekty",
+    "require": {
+        "tecnickcom/tcpdf": "*"
+    }
+}
