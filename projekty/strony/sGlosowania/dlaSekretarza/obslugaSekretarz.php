@@ -62,61 +62,6 @@ if ($conn->connect_error) {
         $stmt->close();
     }
 
-    // 3. Generator Głosowania
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generator_wynikow'])) {
-        // Pobierz wszystkich użytkowników
-        $resultUsers = $conn->query("SELECT idUzytkownika FROM uzytkownicy");
-        $users = array();
-    
-        while ($rowUser = $resultUsers->fetch_assoc()) {
-            $users[] = $rowUser['idUzytkownika'];
-        }
-    
-        // Pobierz wszystkie głosowania
-        $resultVotes = $conn->query("SELECT idGlosowania FROM glosowanie");
-        $votes = array();
-    
-        while ($rowVote = $resultVotes->fetch_assoc()) {
-            $votes[] = $rowVote['idGlosowania'];
-        }
-    
-        // Dla każdego użytkownika
-        foreach ($users as $userId) {
-            // Dla każdego głosowania
-            foreach ($votes as $voteId) {
-                // Pobierz informacje o głosowaniu
-                $resultVoteInfo = $conn->query("SELECT opcja1, opcja2, opcja3, opcja4, opcja5 FROM glosowanie WHERE idGlosowania = $voteId");
-    
-                if ($resultVoteInfo->num_rows > 0) {
-                    $rowVoteInfo = $resultVoteInfo->fetch_assoc();
-    
-                    // Sprawdź, czy użytkownik bierze udział w głosowaniu
-                    $participateInQuorum = (rand(1, 100) <= 75); // Symulacja losowego uczestnictwa
-    
-                    if ($participateInQuorum) {
-                        // Wybierz tylko dostępne opcje
-                        $availableOptions = array_filter($rowVoteInfo, function ($value) {
-                            return $value !== "";
-                        });
-    
-                        if (!empty($availableOptions)) {
-                            // Wybierz losową opcję spośród dostępnych
-                            $randomOptionKey = array_rand($availableOptions);
-    
-                            // Wstaw informację o wybranej opcji do bazy danych
-                            $stmtInsertVote = $conn->prepare("INSERT INTO glosUzytkownika (idUzytkownika, idGlosowania, wybor) VALUES (?, ?, ?)");
-                            $stmtInsertVote->bind_param("iis", $userId, $voteId, $randomOptionKey);
-                            $stmtInsertVote->execute();
-                            $stmtInsertVote->close();
-                        }
-                    }
-                }
-            }
-        }
-    
-        echo '<p>Wygenerowano przypadkowe wyniki dla użytkowników.</p>';
-    }
-
     // 4. Przeglądanie Wyników Głosowań
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['przegladaj_wyniki'])) {
         // Pobierz wszystkie głosowania
@@ -199,7 +144,71 @@ if ($conn->connect_error) {
     }
 
     // 5. Dostęp do Archiwum
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['archiwum'])) {
-        // Tutaj dodaj logikę do dostępu do archiwum
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['dostep_archiwum'])) {
+        // Pobierz dane z tablicy glosowanie
+        $glosowanieQuery = "SELECT * FROM glosowanie";
+        $glosowanieResult = $conn->query($glosowanieQuery);
+    
+        // Sprawdzenie, czy zapytanie zwróciło wyniki
+        if ($glosowanieResult) {
+            // Pobranie danych z wyników zapytania do tablicy
+            $glosowanieData = [];
+            while ($row = $glosowanieResult->fetch_assoc()) {
+                $glosowanieData[] = $row;
+            }
+        } else {
+            echo "Error: " . $mysqli->error;
+        }
+    
+        // Pobierz dane z tablicy glosUzytkownika
+        $glosUzytkownikaQuery = "SELECT * FROM glosUzytkownika";
+        $glosUzytkownikaResult = $conn->query($glosUzytkownikaQuery);
+    
+        // Sprawdzenie, czy zapytanie zwróciło wyniki
+        if ($glosUzytkownikaResult) {
+            // Pobranie danych z wyników zapytania do tablicy
+            $glosUzytkownikaData = [];
+            while ($row = $glosUzytkownikaResult->fetch_assoc()) {
+                $glosUzytkownikaData[] = $row;
+            }
+        } else {
+            echo "Error: " . $mysqli->error;
+        }
+    
+        // Stwórz zahasłowany plik zip
+        $hasloArchiwum = date("dmY");
+        $zipFileName = "archiwum.zip";
+    
+        // Komenda do zabezpieczenia pliku hasłem za pomocą 7-Zip
+        $command = "\"C:\\Program Files\\7-Zip\\7z.exe\" a -p$hasloArchiwum $zipFileName glosowanie.txt glosUzytkownika.txt";
+        exec($command);
+    
+        // Inicjalizuj obiekt ZipArchive
+        $zip = new ZipArchive();
+    
+        // Sprawdź, czy archiwum zostało utworzone
+        if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            // Dodaj plik z danymi z tablicy glosowanie
+            $zip->addFromString("glosowanie.txt", json_encode($glosowanieData));
+    
+            // Dodaj plik z danymi z tablicy glosUzytkownika
+            $zip->addFromString("glosUzytkownika.txt", json_encode($glosUzytkownikaData));
+    
+            $zip->setPassword($hasloArchiwum); // Ustaw hasło
+            $zip->close();
+    
+            // Pobierz plik archiwum zabezpieczonego hasłem
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . $zipFileName . '"');
+            readfile($zipFileName);
+    
+            // Usuń plik tymczasowy
+            unlink($zipFileName);
+    
+            exit();
+        } else {
+            // Jeżeli coś poszło nie tak
+            echo "Błąd podczas tworzenia archiwum.";
+        }
     }
-?>
+    ?>

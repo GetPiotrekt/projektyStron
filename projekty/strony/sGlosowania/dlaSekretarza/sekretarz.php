@@ -38,7 +38,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && ($_SESSI
     // Nawigacja dla admina
     if ($uprawnienia === 'admin') {
         echo '<div class="admin-navigation">';
-        echo '<button onclick="location.href=\'/projekty/strony/sGlosowania/dlaAdmina/admin.php\'">Dla Admina</button>';
+        echo '<button onclick="location.href=\'/projekty/strony/sGlosowania/dlaAdmina/admin.php\'">Panel Admina</button>';
         echo '</div>';
     }
 
@@ -58,41 +58,12 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && ($_SESSI
     <link rel="stylesheet" type="text/css" href="\projekty\strony\sGlosowania\style.css">
     <!-- style dodatkowe -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <style>
-        /* Dodaj styl dla wyboru funkcji */
-        .function-select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            background-color: #B2A59B;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* Dodaj styl dla kontenera funkcji */
-        .function-container {
-            display: none;
-            margin-top: 20px;
-        }
-
-        /* Dodaj styl dla opisu funkcji */
-        .function-description {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
     <!-- Górna nawigacja -->
     <div class="navigation">
         <?php
-        // Nawigacja dla sekretarza
+        // Nawigacja dla sekretarza i admina
         if ($uprawnienia === 'sekretarz' || $uprawnienia === 'admin') {
             echo '<select class="function-select" onchange="toggleFunction(this.value)">';
             echo '<option value="" disabled selected>Wybierz funkcję...</option>';
@@ -102,7 +73,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && ($_SESSI
             echo '<option value="generate-report">Generuj Raport</option>';
             echo '<option value="browse-results">Przeglądaj Wyniki</option>';
             echo '<option value="access-archive">Dostęp do Archiwum</option>';
-            echo '<option value="generator">Generator wyników</option>';
             echo '</select>';
         }
         ?>
@@ -224,16 +194,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && ($_SESSI
         </div>
     </div>
 
-    <!-- 4. Generator losowych wynikow -->
-    <div class="function-container" id="generator">
-        <div class="container">
-            <form method="post" action="obslugaSekretarz.php">
-            <button type="submit" name="generator_wynikow" class="gnrt">Wygeneruj przypadkowe wyniki</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 5.  Wyniki głosowania -->
+    <!-- 4.  Wyniki głosowania -->
     <div class="function-container" id="browse-results">
         <div class="container">
             <div id="wyniki-container">
@@ -242,42 +203,51 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && ($_SESSI
         </div>
     </div>
 
-    <!-- 6.  generowanie raportow -->
+    <!-- 5.  Generowanie raportow -->
     <div class="function-container" id="generate-report">
-    <div class="container">
-        <?php
-            $result = $conn->query("SELECT idGlosowania, tytul, dataRozpoczecia FROM glosowanie");
-            $znalezionoGlosowania = false;
-            
-            if ($result->num_rows > 0) {
-                echo '<form method="POST" action="obslugaPDF.php">';
-                echo '<select name="glosowanie_do_raportu" required>';
-                echo '<option value="" disabled selected hidden>Wybierz głosowanie</option>';
+        <div class="container">
+            <?php
+                $result = $conn->query("SELECT idGlosowania, tytul, dataRozpoczecia FROM glosowanie");
+                $znalezionoGlosowania = false;
+                
+                if ($result->num_rows > 0) {
+                    echo '<form method="POST" action="obslugaPDF.php">';
+                    echo '<select name="glosowanie_do_raportu" required>';
+                    echo '<option value="" disabled selected hidden>Wybierz głosowanie</option>';
 
-                while ($row = $result->fetch_assoc()) {
-                    echo "<option value='{$row['idGlosowania']}'>{$row['tytul']} - {$row['dataRozpoczecia']}</option>";
-                    $znalezionoGlosowania = true;
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<option value='{$row['idGlosowania']}'>{$row['tytul']} - {$row['dataRozpoczecia']}</option>";
+                        $znalezionoGlosowania = true;
+                    }
+
+                    echo '</select>';
+                    echo '<button type="submit" name="raport_glosowanie" class="raportbtn">Generuj szczegółowy raport</button>';
+                    echo '</form>';
+                } else {
+                    echo '<p>Brak dostępnych ogłoszeń do raportu.</p>';
                 }
+                ?>
+                <br><br>
+                
+            <form method="POST" action="obslugaPDF.php">
+                <label for="data_od">Data od:</label>
+                <input type="date" name="data_od" id="data_od" required>
 
-                echo '</select>';
-                echo '<button type="submit" name="raport_glosowanie" class="raportbtn">Generuj szczegółowy raport</button>';
-                echo '</form>';
-            } else {
-                echo '<p>Brak dostępnych ogłoszeń do raportu.</p>';
-            }
-            ?>
-            <br><br>
-            
-        <form method="POST" action="obslugaPDF.php">
-            <label for="data_od">Data od:</label>
-            <input type="date" name="data_od" id="data_od" required>
-
-            <label for="data_do">Data do:</label>
-            <input type="date" name="data_do" id="data_do" required>
-            <br><br>
-            <button type="submit" name="generuj_raport">Generuj raport za dany okres</button>
-        </form>
+                <label for="data_do">Data do:</label>
+                <input type="date" name="data_do" id="data_do" required>
+                <br><br>
+                <button type="submit" name="generuj_raport">Generuj raport za dany okres</button>
+            </form>
+        </div>
     </div>
+
+    <!-- 6.  Archiwum -->
+    <div class="function-container" id="access-archive">
+        <div class="container">
+            <form method="post" action="obslugaSekretarz.php">
+            <button type="submit" name="dostep_archiwum">Generuj zahasłowany plik archiwum</button>
+            </form>
+        </div>
     </div>
 
     <script>

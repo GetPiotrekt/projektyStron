@@ -29,14 +29,14 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     // Nawigacja dla sekretarza
     if ($uprawnienia === 'sekretarz' || $uprawnienia === 'admin') {
         echo '<div class="sekretarz-navigation">';
-        echo '<button onclick="location.href=\'/projekty/strony/sGlosowania/dlaSekretarza/sekretarz.php\'">Dla Sekretarza</button>';
+        echo '<button onclick="location.href=\'/projekty/strony/sGlosowania/dlaSekretarza/sekretarz.php\'">Panel Sekretarza</button>';
         echo '</div>';
     }
 
     // Nawigacja dla admina
     if ($uprawnienia === 'admin') {
         echo '<div class="admin-navigation">';
-        echo '<button onclick="location.href=\'/projekty/strony/sGlosowania/dlaAdmina/admin.php\'">Dla Admina</button>';
+        echo '<button onclick="location.href=\'/projekty/strony/sGlosowania/dlaAdmina/admin.php\'">Panel Admina</button>';
         echo '</div>';
     }
 
