@@ -1,6 +1,6 @@
-Update: Korzystałem z darmowej bazy danych, która po czasie usuneła wszystkie dane z powodu nie używania serwisu, a jako że projekt ma 2 lata, nie dokońca pamiętam co było tam wykorzystywane. 
+Update: Korzystałem z darmowej bazy danych, która po czasie usuneła wszystkie dane z powodu nie używania serwisu
 
-O ile mnie pamięć nie myli sama baza danych zawierała 3 tablice:
+Sama baza danych zawierała 3 tablice:
 - Uzytkownicy (ID, Nazwa, Hasło, Uprawnienia)
 - Glosowania (ID, Nazwa, Treść, Odpowiedzi do wybrania, Rodzaj głosowania)
 - Wyniki (ID, ID_Użytkownika, ID_głosowania, wynik)
