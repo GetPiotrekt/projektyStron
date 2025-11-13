@@ -6,3 +6,5 @@ Sama baza danych zawierała 3 tablice:
 - Wyniki (ID, ID_Użytkownika, ID_głosowania, wynik)
   
 I to na ich podstawie działała cała strona i jak widać tablica "Wyniki", łączyła obie te bazy ułatwiając procesy związane z analizą wyników
+
+Do tego znajduje się folder z formularzem do przychodni, który w samej postaci wizualnej służył zaliczeniu zadania
